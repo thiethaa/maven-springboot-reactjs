@@ -1,21 +1,31 @@
 import React, { useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form,Row,Col } from 'react-bootstrap';
+import axios from 'axios';
 
-const CheckList = () => {
+const CheckList = (props) => {
+    const [id,setId] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errMsg,setErrMsg] =useState('');
     const [sendQuestionnaire, setQuestionnareStatus] = useState(false);
     const [createHubPage, setHubPageStatus] = useState(false);
     const [scheduleDeepDive, setDeepDiveStatus] = useState(false);
+    console.log("schedule " ,scheduleDeepDive);
     const [determineCustomer, setDetermineCustomerStatus] = useState(false);
     const [disscussAddons, setDisscussAddonsStatus] =useState(false);
+    console.log("addons ",disscussAddons);
     const [proxySetting,setProxySettingStatus] = useState(false);
+    console.log("proxy ",proxySetting);
     const [trendExport,setTrendExportStatus] = useState(false);
     const [explainCloudMigrationTool,SetExplainCloudMigrationToolStatus] = useState(false);
     const [networking,setNetworkingStatus] = useState(false);
     const [changeCloud,setChangeCloudStatus] = useState(false);
+    console.log("cloud ",changeCloud);
     const [actionUi,setActionUiStatus] = useState(false);
     const [patching,setPatchingStatus] = useState(false);
     const [siteBuilder,setSideBuilederStatus] = useState(false);
+    console.log("siteBuilder ",siteBuilder);
     const [workArounds,setWorkArroundsStatus] = useState(false);
+    console.log("workArounds ",workArounds);
     const [sourceTrees,setSourceTreesStatus] = useState(false);
     const [gap,setGapStatus] = useState(false);
     const [coming,setComingStatus] = useState(false);
@@ -23,6 +33,7 @@ const CheckList = () => {
     const [methodToMinimize,setMethodTominimizestatus] = useState(false);
     const [determineNetworking,setDetermineNetworkingStatus] = useState(false);
     const [changeRoute,setChangeRouteStatus] = useState(false);
+    console.log("route ",changeRoute);
     const [testingValidation,setTestingValidationStatus] = useState(false);
     const [targetDates,setTargetDatesStatus] = useState(false);
     const [addMember,setAddMemberStatus] = useState(false);
@@ -63,14 +74,77 @@ const CheckList = () => {
     const reset = () => {
         resetParentValue();
         resetChildValue();
-        window.location.reload();
     }
 
+    const submit = (e) =>{
+        e.preventDefault();
+        const newData = {
+            id: id,
+            sendQuestionnaire,
+            createHubPage,
+            scheduleDeepDiveMeeting: scheduleDeepDive,
+            determineCustomer,
+            disscussAddons,
+            proxySetting,
+            trendExport,
+            explainCloudMigrationTool,
+            networking,
+            changeCloud,
+            actionUi,
+            patching,
+            siteBuilder,
+            workArounds,
+            sourceTrees,
+            gap,
+            coming,
+            passwordNotify,
+            methodToMinimize,
+            determineNetworking,
+            changeRoute,
+            testingValidation,
+            targetDates,
+            addmember:addMember,
+        }
+        console.log(newData);
+
+        if(id !== '' || null){
+            axios.post('http://localhost:7070/add-meeting',newData)
+                .then(response => {
+                    alert("Data Saved Successfully!")
+                    props.history.push("/")
+                })
+        }else{
+            setErrMsg ("Meeting Id is Required!!!")
+        }
+
+    }
     return (
         <div>
             <fieldset style={{width:'700px',marginLeft:'200px',marginTop:'50px'}}>
                 <h5>Deep Dive Meeting</h5>
                 <Form className="p-4">
+
+                    <div style={{color:'green',textAlign:'center'}}>{successMsg}</div>
+                    <div style={{color:'Red',textAlign:'center'}}>{errMsg}</div>
+                    <div style={{background:'rgb(221,52,68)', width:'700px',padding:'10px',paddingTop:'25px',marginBottom:'15px'}}>
+                        <Form.Group as={Row} controlId="meetingId">
+                            <Form.Label className="text text-white" column sm="2">
+                                Meeting ID
+                            </Form.Label>
+                            <Col sm="10">
+                                <Form.Control
+                                    type="text"
+                                    value={id}
+                                    onChange={(e)=> {
+                                        setId(e.target.value);
+                                        setSuccessMsg('');
+                                        setErrMsg('')
+                                    }}
+                                    placeholder="Meeting ID" required/>
+                            </Col>
+                        </Form.Group>
+                    </div>
+
                     <Form.Group id="formGridCheckbox">
                         <Form.Check
                             type="checkbox"
@@ -434,8 +508,10 @@ const CheckList = () => {
                             onClick={()=>setAddMemberStatus(!addMember)}
                             label="Add members and start Conversation in Teams" />
                     </Form.Group>
-
-                    <Button type="reset" onClick={reset} variant="danger" style={{marginLeft:'80%',width:'250px'}}>Reset</Button>
+                    <div style={{marginLeft:'30%'}}>
+                        <Button type="submit" onClick={submit} variant="success" style={{width:'200px',margin:'5px'}}>Submit</Button>
+                        <Button type="reset" onClick={reset} variant="danger" style={{width:'200px',margin:'5px'}}>Reset</Button>
+                    </div>
                 </Form>
             </fieldset>
         </div>

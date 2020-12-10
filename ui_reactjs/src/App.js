@@ -9,8 +9,8 @@ export default function App() {
       <BrowserRouter>
         <Layout>
           <Switch>
-            <Route path="/checklist" component={CheckList} exact/>
-            <Route path="/questionnare" component={Questionnare} exact/>
+            <Route path="/checklist" component={CheckList} />
+            <Route path="/questionnare" component={Questionnare} />
           </Switch>
         </Layout>
       </BrowserRouter>
